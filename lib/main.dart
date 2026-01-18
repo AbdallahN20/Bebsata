@@ -1,23 +1,32 @@
 import 'package:flutter/material.dart';
-import 'pages/main_screen.dart';
+import 'package:provider/provider.dart';
+import 'providers/cart_provider.dart';
+import 'providers/user_provider.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const BebsataApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BebsataApp extends StatelessWidget {
+  const BebsataApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Bebsata',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-    ),
-      home:const MyMainPage(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Bebsata',
+        theme: ThemeData(
+          primarySwatch: Colors.orange,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: const SplashScreen(),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }
