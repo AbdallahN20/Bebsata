@@ -1,14 +1,15 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:bebsata/core/theme/app_theme.dart';
 
+/// Optimized glass container - NO BackdropFilter for better performance
+/// Uses simple solid colors with transparency for glass effect
 class GlassContainer extends StatelessWidget {
   final Widget child;
-  final double blur;
   final double opacity;
   final BorderRadius? borderRadius;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
+  final double blur; // Kept for API compatibility but not used
 
   const GlassContainer({
     super.key,
@@ -23,30 +24,31 @@ class GlassContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    // Single color glassmorphism - uses only white (light) or dark grey (dark)
     final glassColor = isDark ? AppTheme.glassDark : AppTheme.glassLight;
 
     return Container(
       margin: margin,
-      child: ClipRRect(
+      padding: padding ?? const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: glassColor.withValues(alpha: isDark ? 0.85 : opacity + 0.7),
         borderRadius: borderRadius ?? BorderRadius.circular(16),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-          child: Container(
-            padding: padding ?? const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              // Simple single color glass effect
-              color: glassColor.withValues(alpha: isDark ? 0.8 : opacity),
-              borderRadius: borderRadius ?? BorderRadius.circular(16),
-              border: Border.all(
-                color: glassColor.withValues(alpha: isDark ? 0.3 : 0.5),
-                width: 1,
-              ),
-            ),
-            child: child,
-          ),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.15),
+          width: 1,
         ),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
+      child: child,
     );
   }
 }

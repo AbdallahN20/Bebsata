@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:bebsata/features/shop/presentation/screens/home_screen.dart';
 import 'package:bebsata/features/cart/presentation/screens/cart_screen.dart';
@@ -14,113 +13,69 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const CartScreen(showBackButton: false),
-    const ProfileScreen(),
-  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      extendBody: true,
-      drawer: const AppDrawer(),
-      body: _screens[_currentIndex],
-      bottomNavigationBar: _buildGlassNavBar(),
-    );
-  }
-
-  Widget _buildGlassNavBar() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Container(
-      margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Container(
-            height: 70,
-            decoration: BoxDecoration(
-              color: isDark
-                  ? AppTheme.glassDark.withValues(alpha: 0.9)
-                  : AppTheme.glassLight.withValues(alpha: 0.9),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.1)
-                    : Colors.white.withValues(alpha: 0.5),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppTheme.primaryColor.withValues(alpha: 0.15),
-                  blurRadius: 30,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(0, Icons.home_rounded, 'Home'),
-                _buildNavItem(1, Icons.shopping_bag_rounded, 'Cart'),
-                _buildNavItem(2, Icons.person_rounded, 'Profile'),
-              ],
-            ),
-          ),
-        ),
+    return Scaffold(
+      drawer: const AppDrawer(),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: const [
+          HomeScreen(),
+          CartScreen(showBackButton: false),
+          ProfileScreen(),
+        ],
       ),
-    );
-  }
-
-  Widget _buildNavItem(int index, IconData icon, String label) {
-    final isSelected = _currentIndex == index;
-    return GestureDetector(
-      onTap: () => setState(() => _currentIndex = index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(
-          horizontal: isSelected ? 20 : 16,
-          vertical: 10,
-        ),
+      bottomNavigationBar: Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppTheme.primaryColor.withValues(alpha: 0.15)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: isSelected
-                  ? AppTheme.primaryColor
-                  : AppTheme.textSecondary,
-              size: 24,
+          color: isDark ? AppTheme.darkSurface : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 20,
+              offset: const Offset(0, 5),
             ),
-            if (isSelected) ...[
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: TextStyle(
-                  color: AppTheme.primaryColor,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) => setState(() => _currentIndex = index),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            selectedItemColor: AppTheme.primaryColor,
+            unselectedItemColor: AppTheme.textSecondary,
+            type: BottomNavigationBarType.fixed,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_outlined),
+                activeIcon: Icon(Icons.home_rounded),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart_outlined),
+                activeIcon: Icon(Icons.shopping_cart_rounded),
+                label: 'Cart',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                activeIcon: Icon(Icons.person_rounded),
+                label: 'Profile',
               ),
             ],
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-// Profile Screen
+// Simplified Profile Screen
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -129,176 +84,121 @@ class ProfileScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark
-                ? [
-                    AppTheme.primaryColor.withValues(alpha: 0.15),
-                    AppTheme.darkBackground,
-                  ]
-                : [
-                    AppTheme.primaryColor.withValues(alpha: 0.08),
-                    AppTheme.accentColor.withValues(alpha: 0.05),
-                    Colors.white,
-                  ],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [AppTheme.primaryColor, AppTheme.accentColor],
-                    ),
-                  ),
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).cardColor,
-                      border: Border.all(
-                        color: Theme.of(context).cardColor,
-                        width: 3,
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.person,
-                      size: 50,
-                      color: AppTheme.primaryColor,
-                    ),
-                  ),
+      backgroundColor: isDark
+          ? AppTheme.darkBackground
+          : AppTheme.lightBackground,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text('Profile'),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            // Avatar
+            Container(
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [AppTheme.primaryColor, AppTheme.accentColor],
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  'Guest User',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              ),
+              child: CircleAvatar(
+                radius: 50,
+                backgroundColor: Theme.of(context).cardColor,
+                child: Icon(
+                  Icons.person,
+                  size: 50,
+                  color: AppTheme.primaryColor,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'Sign in to access your profile',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [AppTheme.primaryColor, AppTheme.primaryDark],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppTheme.primaryColor.withValues(alpha: 0.4),
-                        blurRadius: 15,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/welcome');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Text(
-                      'Sign In',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-                _buildMenuItem(context, Icons.favorite_outline, 'My Favorites'),
-                _buildMenuItem(
-                  context,
-                  Icons.local_shipping_outlined,
-                  'My Orders',
-                  () => Navigator.pushNamed(context, '/orders'),
-                ),
-                _buildMenuItem(
-                  context,
-                  Icons.location_on_outlined,
-                  'Delivery Address',
-                ),
-                _buildMenuItem(
-                  context,
-                  Icons.payment_outlined,
-                  'Payment Methods',
-                ),
-                _buildMenuItem(
-                  context,
-                  Icons.settings_outlined,
-                  'Settings',
-                  () => Navigator.pushNamed(context, '/settings'),
-                ),
-                _buildMenuItem(
-                  context,
-                  Icons.help_outline,
-                  'Help & Support',
-                  () => Navigator.pushNamed(context, '/support'),
-                ),
-                const SizedBox(height: 100),
-              ],
+              ),
             ),
-          ),
+            const SizedBox(height: 16),
+            Text(
+              'Guest User',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Sign in to access your profile',
+              style: TextStyle(color: AppTheme.textSecondary),
+            ),
+            const SizedBox(height: 24),
+            // Sign In Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pushNamed(context, '/welcome'),
+                child: const Text('Sign In'),
+              ),
+            ),
+            const SizedBox(height: 32),
+            // Menu Items
+            _MenuItem(
+              icon: Icons.favorite_outline,
+              title: 'My Favorites',
+              onTap: () {},
+            ),
+            _MenuItem(
+              icon: Icons.local_shipping_outlined,
+              title: 'My Orders',
+              onTap: () => Navigator.pushNamed(context, '/orders'),
+            ),
+            _MenuItem(
+              icon: Icons.settings_outlined,
+              title: 'Settings',
+              onTap: () => Navigator.pushNamed(context, '/settings'),
+            ),
+            _MenuItem(
+              icon: Icons.help_outline,
+              title: 'Help & Support',
+              onTap: () => Navigator.pushNamed(context, '/support'),
+            ),
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildMenuItem(
-    BuildContext context,
-    IconData icon,
-    String title, [
-    VoidCallback? onTap,
-  ]) {
+class _MenuItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  const _MenuItem({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isDark
-            ? AppTheme.glassDark.withValues(alpha: 0.8)
-            : AppTheme.glassLight.withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.1)
-              : Colors.white.withValues(alpha: 0.5),
-          width: 1,
-        ),
+        color: isDark ? AppTheme.darkSurface : Colors.white,
+        borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: AppTheme.primaryColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, color: AppTheme.primaryColor),
+          child: Icon(icon, color: AppTheme.primaryColor, size: 20),
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-        trailing: Icon(Icons.chevron_right, color: AppTheme.textSecondary),
-        onTap: onTap ?? () {},
+        title: Text(title),
+        trailing: const Icon(Icons.chevron_right, size: 20),
+        onTap: onTap,
       ),
     );
   }
