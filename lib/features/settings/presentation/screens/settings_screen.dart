@@ -8,187 +8,217 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Provider.of<ThemeProvider>(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      backgroundColor: isDark
+          ? AppTheme.darkBackground
+          : AppTheme.lightBackground,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text('Settings'),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Appearance Section
-          _buildSectionTitle(context, 'Appearance'),
-          _buildSettingCard(
-            context,
+          // Theme Section
+          const SettingsSectionHeader(title: 'Appearance'),
+          SettingsCard(
             children: [
-              ListTile(
-                leading: Icon(
-                  theme.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                  color: AppTheme.primaryColor,
-                ),
-                title: const Text('Dark Mode'),
-                trailing: Switch(
-                  value: theme.isDarkMode,
-                  onChanged: (_) => theme.toggleTheme(),
-                  activeColor: AppTheme.primaryColor,
-                ),
+              SettingsSwitchTile(
+                icon: Icons.dark_mode_outlined,
+                title: 'Dark Mode',
+                subtitle: 'Toggle dark/light theme',
+                value: isDark,
+                onChanged: (_) {
+                  Provider.of<ThemeProvider>(
+                    context,
+                    listen: false,
+                  ).toggleTheme();
+                },
               ),
             ],
           ),
           const SizedBox(height: 24),
 
           // Notifications Section
-          _buildSectionTitle(context, 'Notifications'),
-          _buildSettingCard(
-            context,
+          const SettingsSectionHeader(title: 'Notifications'),
+          SettingsCard(
             children: [
-              _buildSwitchTile('Push Notifications', true, (_) {}),
-              const Divider(height: 1),
-              _buildSwitchTile('Email Notifications', false, (_) {}),
-              const Divider(height: 1),
-              _buildSwitchTile('Order Updates', true, (_) {}),
-              const Divider(height: 1),
-              _buildSwitchTile('Promotional Offers', false, (_) {}),
+              SettingsSwitchTile(
+                icon: Icons.notifications_outlined,
+                title: 'Push Notifications',
+                subtitle: 'Receive push notifications',
+                value: true,
+                onChanged: (_) {},
+              ),
+              const SettingsDivider(),
+              SettingsSwitchTile(
+                icon: Icons.email_outlined,
+                title: 'Email Notifications',
+                subtitle: 'Receive email updates',
+                value: true,
+                onChanged: (_) {},
+              ),
             ],
           ),
           const SizedBox(height: 24),
 
-          // Privacy Section
-          _buildSectionTitle(context, 'Privacy'),
-          _buildSettingCard(
-            context,
+          // General Section
+          const SettingsSectionHeader(title: 'General'),
+          SettingsCard(
             children: [
-              _buildNavigationTile(
-                context,
-                'Privacy Policy',
-                Icons.privacy_tip_outlined,
+              SettingsListTile(
+                icon: Icons.language_outlined,
+                title: 'Language',
+                trailing: const Text('English'),
+                onTap: () {},
               ),
-              const Divider(height: 1),
-              _buildNavigationTile(
-                context,
-                'Terms of Service',
-                Icons.description_outlined,
-              ),
-              const Divider(height: 1),
-              _buildNavigationTile(
-                context,
-                'Data & Privacy',
-                Icons.security_outlined,
+              const SettingsDivider(),
+              SettingsListTile(
+                icon: Icons.location_on_outlined,
+                title: 'Location',
+                trailing: const Text('Auto'),
+                onTap: () {},
               ),
             ],
           ),
           const SizedBox(height: 24),
 
           // About Section
-          _buildSectionTitle(context, 'About'),
-          _buildSettingCard(
-            context,
+          const SettingsSectionHeader(title: 'About'),
+          SettingsCard(
             children: [
-              ListTile(
-                leading: Icon(Icons.info_outline, color: AppTheme.primaryColor),
-                title: const Text('App Version'),
-                trailing: Text(
-                  '1.0.0',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
+              SettingsListTile(
+                icon: Icons.info_outline,
+                title: 'App Version',
+                trailing: const Text('1.0.0'),
+                onTap: () {},
               ),
-              const Divider(height: 1),
-              _buildNavigationTile(context, 'Licenses', Icons.article_outlined),
-            ],
-          ),
-          const SizedBox(height: 32),
-
-          // Danger Zone
-          _buildSectionTitle(context, 'Danger Zone'),
-          _buildSettingCard(
-            context,
-            children: [
-              ListTile(
-                leading: const Icon(
-                  Icons.delete_outline,
-                  color: AppTheme.errorColor,
-                ),
-                title: const Text(
-                  'Delete Account',
-                  style: TextStyle(color: AppTheme.errorColor),
-                ),
-                onTap: () => _showDeleteDialog(context),
+              const SettingsDivider(),
+              SettingsListTile(
+                icon: Icons.description_outlined,
+                title: 'Terms of Service',
+                onTap: () {},
+              ),
+              const SettingsDivider(),
+              SettingsListTile(
+                icon: Icons.privacy_tip_outlined,
+                title: 'Privacy Policy',
+                onTap: () {},
               ),
             ],
           ),
-          const SizedBox(height: 32),
         ],
       ),
     );
   }
+}
 
-  Widget _buildSectionTitle(BuildContext context, String title) {
+// Settings Widgets
+
+class SettingsSectionHeader extends StatelessWidget {
+  final String title;
+  const SettingsSectionHeader({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 8),
       child: Text(
         title,
-        style: Theme.of(
-          context,
-        ).textTheme.titleMedium?.copyWith(color: AppTheme.textSecondary),
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: AppTheme.textSecondary,
+        ),
       ),
     );
   }
+}
 
-  Widget _buildSettingCard(
-    BuildContext context, {
-    required List<Widget> children,
-  }) {
-    return Card(child: Column(children: children));
-  }
+class SettingsCard extends StatelessWidget {
+  final List<Widget> children;
+  const SettingsCard({super.key, required this.children});
 
-  Widget _buildSwitchTile(String title, bool value, Function(bool) onChanged) {
-    return ListTile(
-      title: Text(title),
-      trailing: Switch(
-        value: value,
-        onChanged: onChanged,
-        activeColor: AppTheme.primaryColor,
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? AppTheme.darkSurface : Colors.white,
+        borderRadius: BorderRadius.circular(12),
       ),
+      child: Column(children: children),
     );
   }
+}
 
-  Widget _buildNavigationTile(
-    BuildContext context,
-    String title,
-    IconData icon,
-  ) {
+class SettingsDivider extends StatelessWidget {
+  const SettingsDivider({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Divider(height: 1, indent: 56, color: AppTheme.dividerColor);
+  }
+}
+
+class SettingsListTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final Widget? trailing;
+  final VoidCallback onTap;
+
+  const SettingsListTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    this.trailing,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(icon, color: AppTheme.primaryColor),
       title: Text(title),
-      trailing: const Icon(Icons.chevron_right, size: 20),
-      onTap: () {},
+      trailing: trailing ?? const Icon(Icons.chevron_right, size: 20),
+      onTap: onTap,
     );
   }
+}
 
-  void _showDeleteDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Account'),
-        content: const Text(
-          'Are you sure you want to delete your account? This action cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // Handle delete
-            },
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: AppTheme.errorColor),
-            ),
-          ),
-        ],
-      ),
+class SettingsSwitchTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  const SettingsSwitchTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SwitchListTile(
+      secondary: Icon(icon, color: AppTheme.primaryColor),
+      title: Text(title),
+      subtitle: subtitle != null
+          ? Text(
+              subtitle!,
+              style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+            )
+          : null,
+      value: value,
+      onChanged: onChanged,
+      activeColor: AppTheme.primaryColor,
     );
   }
 }

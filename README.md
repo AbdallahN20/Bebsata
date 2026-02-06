@@ -1,95 +1,148 @@
 # Bebsata Market
 
-A premium Flutter e-commerce mobile app with Clean Architecture and Glassmorphism UI design.
+A premium Flutter e-commerce app with Clean Architecture, modular feature structure, dark theme support, and optimized performance.
 
-![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)
+![Flutter](https://img.shields.io/badge/Flutter-3.8+-blue.svg)
 ![Dart](https://img.shields.io/badge/Dart-3.0+-blue.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Platforms](https://img.shields.io/badge/Platforms-Android%20|%20iOS%20|%20Web-green.svg)
 
 ## ✨ Features
 
-- **Splash Screen** - Animated intro with smooth transitions
-- **Modern UI** - Glassmorphism design with gradient backgrounds
-- **Product Catalog** - Browse products by category
-- **Shopping Cart** - Add, remove, and update quantities
-- **Favorites** - Animated heart with particle effects
-- **Category Filtering** - Real-time product filtering
-- **Responsive Design** - Works on all screen sizes
+### Core
+- 🌗 **Dark/Light Theme** - Persistent theme (saved locally with SharedPreferences)
+- 🛒 **Shopping Cart** - Add, remove, update quantities, clear all
+- ❤️ **Favorites** - Synced across all screens with clear all option
+- 📦 **Product Catalog** - Browse by category with filtering
+- 🔍 **Search** - Find products quickly
+- 💳 **Payment Flow** - Checkout with multiple payment methods
+- 👤 **Profile Screen** - Stats card, quick actions, settings
+
+### Screens
+- Splash Screen with animations
+- Welcome / Sign In / Sign Up (Auth flow)
+- Home with offers banner & categories
+- Product Details with add to cart
+- Cart with checkout & clear button
+- Favorites with clear button
+- Profile with stats & menu
+- Orders (Active/Completed/Cancelled)
+- Support with Chat Bot
+- Rate App (5-star rating)
+- Settings (Theme toggle, notifications)
+- Navigation Drawer with profile sheet
+
+### Performance
+- ⚡ **Optimized widgets** - No heavy BackdropFilter
+- 📦 **Tree-shaking** - 99% icon font reduction
+- 🌐 **Web compatible** - Builds for web
+- 🖼️ **Cached images** - Using cached_network_image
 
 ## 🏗️ Architecture
 
-This app follows **Clean Architecture** principles:
+Each feature follows the **screens / widgets / providers** pattern for scalability:
 
 ```
 lib/
-├── core/                    # Shared utilities
-│   ├── constants/           # App constants
-│   ├── theme/               # AppTheme, colors, typography
-│   └── widgets/             # Reusable widgets (GlassContainer, AnimatedHeart)
-├── features/                # Feature modules
-│   ├── cart/                # Cart feature
-│   │   ├── domain/          # Entities
-│   │   └── presentation/    # Screens, providers
-│   ├── navigation/          # Bottom navigation
-│   ├── shop/                # Shop feature
-│   │   ├── data/            # Repositories, data sources
-│   │   ├── domain/          # Entities, repository interfaces
-│   │   └── presentation/    # Screens, providers, widgets
-│   ├── splash/              # Splash screen
-│   └── user/                # User/Auth feature
-└── main.dart                # App entry point
+├── core/
+│   ├── constants/        # App constants
+│   ├── routes/           # Centralized AppRoutes
+│   ├── theme/            # AppTheme + ThemeProvider
+│   └── widgets/          # GlassContainer (shared)
+│
+├── features/
+│   ├── auth/
+│   │   └── presentation/
+│   │       └── screens/  # welcome, sign_in, sign_up
+│   │
+│   ├── cart/
+│   │   └── presentation/
+│   │       ├── screens/  # cart_screen
+│   │       ├── widgets/  # cart_widgets (CartItemCard, QuantitySelector, etc.)
+│   │       └── providers/# cart_provider
+│   │
+│   ├── home/
+│   │   └── presentation/
+│   │       ├── screens/  # home_screen
+│   │       └── widgets/  # home_widgets (OfferBanner, CategoryItem, etc.)
+│   │
+│   ├── navigation/
+│   │   └── presentation/
+│   │       ├── screens/  # main_screen
+│   │       └── widgets/  # app_drawer, drawer_widgets, profile_bottom_sheet
+│   │
+│   ├── shop/
+│   │   ├── presentation/
+│   │   │   ├── screens/  # all_products, product_details, favorites
+│   │   │   ├── widgets/  # product_card
+│   │   │   └── providers/# shop_provider
+│   │   ├── domain/
+│   │   │   └── entities/ # product, category
+│   │   └── data/         # demo_data
+│   │
+│   ├── user/
+│   │   └── presentation/
+│   │       ├── screens/  # profile_screen
+│   │       ├── widgets/  # profile_widgets (ProfileHeader, ProfileMenuItem, etc.)
+│   │       └── providers/# user_provider
+│   │
+│   ├── settings/
+│   │   └── presentation/
+│   │       └── screens/  # settings_screen (with SettingsCard, SettingsTile widgets)
+│   │
+│   ├── orders/           # Orders screen
+│   ├── payment/          # Payment flow
+│   ├── rate/             # Rate app
+│   ├── splash/           # Splash screen
+│   └── support/          # Support chat bot
+│
+└── main.dart
 ```
-
-## 🎨 UI Components
-
-| Component | Description |
-|-----------|-------------|
-| `GlassContainer` | Glassmorphism container with blur effect |
-| `AnimatedHeart` | Favorite button with scale animation and particles |
-| `ProductCard` | Glass-style product card |
-| `MainScreen` | Floating glass bottom navigation |
 
 ## 🚀 Getting Started
 
-### Prerequisites
+```bash
+# Clone
+git clone https://github.com/yourusername/bebsata.git
+cd bebsata
 
-- Flutter 3.0+
-- Dart 3.0+
+# Install dependencies
+flutter pub get
 
-### Installation
+# Run
+flutter run
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/bebsata.git
-   cd bebsata
-   ```
+# Build for web
+flutter build web --release
+```
 
-2. Install dependencies:
-   ```bash
-   flutter pub get
-   ```
+## 📱 Platforms
 
-3. Run the app:
-   ```bash
-   flutter run
-   ```
-
-## 📱 Screenshots
-
-| Splash | Home | Product Details | Cart |
-|--------|------|-----------------|------|
-| 🎬 | 🏠 | 📦 | 🛒 |
+| Platform | Status |
+|----------|--------|
+| Android  | ✅ |
+| iOS      | ✅ |
+| Web      | ✅ |
 
 ## 🛠️ Dependencies
 
 - `provider` - State management
 - `google_fonts` - Typography
-- `convex_bottom_bar` - Bottom navigation
+- `shared_preferences` - Persistent theme storage
+- `cached_network_image` - Image caching
+
+## 📂 Key Widget Separations
+
+| Feature | Widgets File | Contains |
+|---------|--------------|----------|
+| Cart | `cart_widgets.dart` | CartItemCard, QuantitySelector, CartCheckoutSection, EmptyCartView |
+| Home | `home_widgets.dart` | OfferBanner, CategoryItem, SectionHeader, HomeSearchBar |
+| Profile | `profile_widgets.dart` | ProfileHeader, ProfileMenuItem, ProfileStatsCard |
+| Drawer | `drawer_widgets.dart` | AppDrawerHeader, DrawerMenuItem, DrawerThemeToggle, DrawerLogoutButton |
+| Settings | `settings_screen.dart` | SettingsSectionHeader, SettingsCard, SettingsListTile, SettingsSwitchTile |
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+MIT License
 
-## 👨‍💻 Author
-
+---
 Built with ❤️ using Flutter

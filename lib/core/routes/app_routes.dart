@@ -9,6 +9,7 @@ import 'package:bebsata/features/rate/presentation/screens/rate_screen.dart';
 import 'package:bebsata/features/settings/presentation/screens/settings_screen.dart';
 import 'package:bebsata/features/orders/presentation/screens/orders_screen.dart';
 import 'package:bebsata/features/cart/presentation/screens/cart_screen.dart';
+import 'package:bebsata/features/shop/presentation/screens/favorites_screen.dart';
 
 /// Centralized route names for the app
 class AppRoutes {
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String settings = '/settings';
   static const String orders = '/orders';
   static const String cart = '/cart';
+  static const String favorites = '/favorites';
 
   /// Generate all routes for MaterialApp
   static Map<String, WidgetBuilder> get routes => {
@@ -35,6 +37,7 @@ class AppRoutes {
     settings: (_) => const SettingsScreen(),
     orders: (_) => const OrdersScreen(),
     cart: (_) => const CartScreen(),
+    favorites: (_) => const FavoritesScreen(),
   };
 
   /// Navigate to a named route

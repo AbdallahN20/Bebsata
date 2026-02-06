@@ -45,6 +45,12 @@ class ShopProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Clear all favorites
+  void clearFavorites() {
+    _favoriteIds.clear();
+    notifyListeners();
+  }
+
   // Select category
   void selectCategory(String? categoryId) {
     _selectedCategoryId = categoryId;
