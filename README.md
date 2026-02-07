@@ -142,7 +142,10 @@ flutter build web --release
 
 ## 📄 License
 
-MIT License
+**© 2026 AbdallahN20. All Rights Reserved.**
+
+This project is proprietary. Unauthorized copying, modification, or distribution is prohibited.
+See the [LICENSE](LICENSE) file for details.
 
 ---
 Built with ❤️ using Flutter
